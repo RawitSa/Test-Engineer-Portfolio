@@ -1,0 +1,6 @@
+# HEAD=MODE[:EXPECTED_TEXT]
+# MODE = check_led | CheckOCR | read2d | BlinkLed   (any raw step name also works, e.g. read2d_SetPort)
+1=check_led
+2=CheckOCR:HELLO
+3=read2d
+4=BlinkLed

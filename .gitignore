@@ -1,0 +1,15 @@
+# build output / IDE
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.pdb
+*.sdf
+
+# third-party and internal binaries (see src/camera_show/lib/README.md)
+*.dll
+*.exe
+
+# runtime data from the shop floor (images, logs, per-head settings)
+/src/camera_show/config/

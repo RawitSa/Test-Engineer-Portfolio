@@ -1,0 +1,17 @@
+# Compare mode, per-symbol check. One taught step (Image1.png, Image2.png ...) = ONE symbol.
+# Teach: in the Compare mode draw a box around each symbol, one step per symbol.
+symbols=1
+# S1: correlation of the symbol (light removed). Calibrate from the SYMBOL lines of camera_show_hub.log:
+#     lines look like  SYMBOL S1=0.82/0.71/0.95 S2=...   (S1 / S2 / C of each symbol; '!' = that symbol failed)
+#     set each limit to about 0.9 x the LOWEST value seen on good units.
+sym_zncc=0.55
+# S2: correlation of the edges = the SHAPE must match
+sym_edge=0.40
+# C: contrast of the strokes vs surroundings, share of the taught symbol's contrast
+sym_contrast=0.50
+# all symbols must pass together this long (milliseconds)
+hold_ms=800
+# pixels the edge match may differ from the S1 position
+edge_shift=2
+# 180 = taught from a picture turned 180 degrees
+rotate=0

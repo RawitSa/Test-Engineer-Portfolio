@@ -1,0 +1,120 @@
+camera_show - using the exe from another project (host)
+========================================================
+
+1. WHERE THINGS ARE
+   The exe finds the config folder by itself (Services/AppPaths.cs). It tries, in order:
+     CAMERA_SHOW_CONFIG (environment) -> "config=" in camera_show_paths.txt next to the exe ->
+     ../../config from the current folder (host\bin\Debug -> host\config) ->
+     ../config from the exe folder (host\mini_projeck -> host\config) -> ../../config and ./config from the exe
+     folder -> a "config" folder found walking up. A folder counts when it holds head.txt or cameraStep_*.csv.
+   The first line of camera_show_hub.log says which one was used.
+   Result / ack files (test_head_N_result.txt, call_exe_tric.txt, camera_show_hub.log) go to the CURRENT folder,
+   because the host starts the exe without a working directory and reads them from its own folder.
+   Change with  output=...  in camera_show_paths.txt.
+
+   camera_show_paths.txt (next to camera_show.exe, optional):
+       config=../config
+       output=
+
+2. HOW THE HOST STARTS THE EXE (what it does today, and how the exe answers)
+   host: writes config\test_head_N_steptest.txt + _timeout.txt, then config\head.txt, deletes call_exe_tric.txt,
+         starts ..\mini_projeck\camera_show.exe and waits for call_exe_tric.txt, then waits for test_head_N_result.txt.
+   exe : first start  -> becomes the hub (one window, up to 8 cameras), starts the head(s) in head.txt together,
+                         writes call_exe_tric.txt.
+         later starts -> hand their head(s) to the running hub (config\hub_inbox), write call_exe_tric.txt, exit.
+         hub closes itself after config\camera_show_idle_exit.txt seconds without work (default 120, 0 = never).
+   head.txt may hold several heads ("1 2 3 4" or one per line): they all start at the same moment.
+   config\camera_show_mode.txt containing  single  brings back the original one-process-per-head Form1.
+   Modes the hub cannot run (Normal, MultipleLed) are given to the original Form1.
+
+3. CAMERA PORTS
+   Each cameraStep_<mode>.csv has its own "Head N Port". If they disagree, the same head opens a different camera
+   in different modes (the hub log then says WARNING ... the CSV files disagree).
+   Fix, pick one:
+     a) config\camera_show_port_source.txt containing one mode name, e.g.  read2d   -> Port / Set Address / Gamma of
+        every mode come from cameraStep_read2d.csv (the *_SetPort mode is exempt). The host's SetPortCameraMain keeps
+        updating that one file, so everything stays consistent.
+     b) in the host (Function_in_excel.cs, SetPortCameraMain) list every mode that has a camera:
+          string[] nameFileTarget = { "cameraStep_read2d", "cameraStep_check_led_red",
+                                      "cameraStep_check_led_green", "cameraStep_check_led_blue" };
+   Right-click a tile > Set port also writes the chosen port to every mode (or to the port source) and sets
+   Set Address = Port, so that head always opens exactly that port.
+   Port numbers are Windows' camera order: after unplugging / rebooting they can change. Run the host's Set Port
+   (it reads the "Bottom N" label) again, or test Gamma: tile menu > Address > Set Gamma, unplug/replug,
+   then Address > Read gamma from the live camera. If the value survives, Set Address = Gamma is safe to use.
+
+4. FILES TO COPY INTO ..\mini_projeck
+   camera_show.exe (new build). The DLLs already there are enough (Emgu.CV.World, cvextern, zxing, zxing.presentation,
+   SetupPay, ZedGraph).
+
+5. THE HUB WINDOW (8 tiles)
+   click a tile ........ select it ("USING CAMERA"): its frame lights up in the head's colour (a darker shade of the
+                         colour while a job or setup view is running on it)
+   mouse wheel ......... zoom THAT camera only; drag = move while zoomed; middle click or key 0 = 100%
+                         (the zoomed part is cut from the full-resolution frame, so it is sharp)
+   double-click / Space  capture ONE frame (opens the camera in one-frame mode if it is closed)
+   keys 1..8 ........... select a camera, + / - zoom the selected one
+   title bar ........... Head N | Port P  = the port really opened (found by the Port / Gamma rules)
+   footer checkbox ..... "Remote (AnyDesk): 1 frame at a time": job pictures every 1.5 s, setup views only show a frame
+                         when asked. Saved in config\camera_show_remote.txt.
+
+
+6. CAMERA COUNT, SAVED CAMERAS, AUTO RESOLUTION  (new)
+   Toolbar at the top of the hub window:
+     Cameras found / Show: Auto|1..8 .... tiles follow the number of cameras Windows lists (checked every 4 s, so plugging or
+                                          unplugging a camera changes the window). A number here is saved in
+                                          config\camera_show_count.txt  ("auto" or 1..8) - you can also edit that file.
+     Default (1 camera) ................. shows one tile, stops the other live views, opens camera 1, saves count = 1.
+     Rescan ............................. read the camera list now.
+     Auto assign ports .................. head 1 = first camera in Windows' list, head 2 = second ... and save it.
+     Save ports ......................... save the port each shown head is using now.
+   Right-click a tile > Set port also saves (the menu shows the camera name next to every port number).
+
+   WHY THE HEADS SWAPPED AFTER A RESTART: a "port" is only the position of the camera in Windows' list. After a restart the
+   list can be in another order, so "head 1 = port 0" opened another camera. Now every saved port also stores the camera's
+   identity (USB device path) in config\camera_show_ports.txt  (head|port|id|name). When a head opens, its CURRENT port is looked
+   up from that identity, and the CSV port is corrected. Rules:
+     * keep every camera in the SAME USB socket (the identity of identical cameras includes the socket);
+     * a head whose camera is unplugged FAILS with "Camera of head N not connected" instead of opening another camera;
+     * a head that was never saved keeps using the CSV port the first time, and that camera is remembered from then on;
+     * Set Address = Gamma heads and the *_SetPort mode keep their old behaviour;
+     * to forget everything: delete config\camera_show_ports.txt.
+
+   Auto resolution: config\camera_show_resolution.txt (optional)
+       mode=auto          (off = never change the size)
+       3=1280x720         3 or more cameras connected -> capture 1280x720
+       5=640x480          5 or more -> 640x480
+   These are the defaults. Fewer cameras connected -> the CSV Frame width / height again (never larger than the CSV). Frames
+   are scaled back to the CSV size before the checks, so every ROI stays valid. Applied each time a camera is opened.
+
+   Virtual cameras: any camera whose name contains a word listed in config\camera_show_ignore.txt is ignored (not counted, not
+   offered in Set port, never assigned). No file = "OBS" (OBS Virtual Camera). One line "-" = ignore nothing.
+
+
+7. COMPARE MODE (template check)  (new - replaces the old KAZE matcher; DrawMatches.cs and ParallelRunner.cs are deleted)
+   Any step name that contains "compar" (e.g. compar_image) is a Compare job:  camera_show.exe --multi 1=compar_image
+   * Teach it in the hub: pick the mode, Live, right-click > ROI > Draw ROI and drag around the area that must be present.
+     The picture inside the rectangle is saved as config\<step>\<head>Image<n>.png (the template), the rectangle + padding
+     (config\CameraShow_RoiCrop.txt, default 10 px) as the search area. More areas: ROI > "Compare image step being edited".
+   * Run: for every template the live picture must show ALL of it. Light does not matter (fixture glare, bright, dark,
+     washed-out, gradients): the picture is flattened and the ink is separated per picture (Otsu).
+   * It is checked cell by cell, not as one average: one missing digit, segment, dot or icon FAILs. The cells that are missing
+     are drawn in red on the tile.  A step needs 3 good frames in a row.  Result files are unchanged: "Image Matched" + PASS,
+     or "(n)time over" + FAIL (the detail - score, parts missing - is in camera_show_hub.log).
+   * Teach the template with a good, complete picture (every segment lit, no dust in the area).
+   * config\camera_show_template.txt (optional, key=value): tolerance=3, cell_min=0.35, cell_ink=0.45, cell_fail_max=0,
+     min_score=0.30, stable_frames=3, rotate=0|180 (180 = template saved from a picture turned 180 deg), cell_px=0 (auto).
+     Too many FAILs on a good part -> raise tolerance / lower cell_min.  A missing part passes -> lower tolerance / raise cell_min.
+
+7. START LIVE VIEW (right-click a tile)
+   Start live view - run the mode ... runs the check of the head's mode exactly like a real job (read OCR / decode 2D /
+                                      LED colours / blink / compare): same settings, same overlays, same decisions.
+                                      It never gives up (no time-out), writes no test_head_N_result.txt and keeps the camera
+                                      open. A PASS is shown for about a second, then the check starts again.
+   Start live view - picture only .. the plain camera picture (setup).
+   While live: "Picture only / Run the mode" switches between the two; ROI, camera values, Mode, video format and a
+   saved template all restart the check by themselves so it always uses what is on disk.
+   If the mode cannot run (no template, missing settings) the tile shows the plain picture and the reason
+   ("Live (picture only) - ...") and tries again when a setting changes.
+   The mode is the one in the right-click > Mode menu (default: line 1 of test_head_N_steptest.txt). For OCR the text
+   to find is line 2 of that file; without it the tile just shows what is being read.
