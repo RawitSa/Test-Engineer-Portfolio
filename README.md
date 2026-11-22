@@ -14,18 +14,15 @@
 
 - ตัดชื่อบริษัท ลูกค้า รหัสผลิตภัณฑ์ และข้อมูลภายในออกทั้งหมด
 - ตัวเลขทุกตัวระบุที่มา (ภาพสังเคราะห์ / ภาพจริง / โค้ดจำลอง) และแยกจากผลบนหน้างานจริง
-- ซอร์สโค้ดใน [src/camera_show](src/camera_show/README.md) เป็นเวอร์ชันที่ build และรันผ่านบนเครื่องจริง ไม่รวม DLL Third Party
-  และไลบรารีภายใน (`SetupPay`) ดูรายการใน [lib/README.md](src/camera_show/lib/README.md) ประวัติเวอร์ชันในโค้ด (`Version Updata.cs`) ระบุว่าปี 2026.01 มีการจัดโครงสร้างโค้ดใหม่โดยใช้ AI ช่วย
-- งานเหล่านี้พัฒนาร่วมกับ AI assistant (Claude) โดยผมเป็นผู้กำหนดความต้องการ ทดสอบบนเครื่องจริง
-  พบและรายงานข้อบกพร่อง และตัดสินใจเลือกแนวทาง `[ตรวจสอบและแก้ข้อความนี้ให้ตรงกับสิ่งที่คุณทำจริง]`
+- ซอร์สโค้ดใน [src/camera_show](src/camera_show/README.md) เป็นเวอร์ชันที่ build และรันผ่านบนเครื่องจริง ไม่รวม DLL Third Party ประวัติเวอร์ชันในโค้ด (`Version Updata.cs`) ระบุว่าปี 2026.01 มีการจัดโครงสร้างโค้ดใหม่โดยใช้ AI ช่วย
+- งานเหล่านี้พัฒนาร่วมกับ AI assistant (Claude) โดยผมเป็นผู้กำหนดความต้องการ ทดสอบบนเครื่องจริงพบและรายงานข้อบกพร่อง และตัดสินใจเลือกแนวทาง
 
 ## ผลงาน
 
 | # | โปรเจกต์ | สิ่งที่แสดงให้เห็น |
 |---|----------|--------------------|
 | 1 | [ระบบตรวจ LCD symbol ด้วยกล้อง + AI](projects/01-vision-inspection.md) | risk-based testing (false pass), threshold design, regression, multi-LED check |
-| 2 | [ระบบทดสอบ PCBA 12 station พร้อมกัน](projects/02-multi-station-pcba-test-system.md) | test architecture, hardware integration (NI cDAQ, RS485), live monitoring UI |
-| 3 | [การอ่าน DataMatrix ที่มีคราบ flux](projects/03-datamatrix-read-reliability.md) | วิเคราะห์ปัญหา, เปรียบเทียบเครื่องมือด้วยข้อมูล, รู้ขีดจำกัด |
+| 2 | [การอ่าน DataMatrix ที่มีคราบ flux](projects/03-datamatrix-read-reliability.md) | วิเคราะห์ปัญหา, เปรียบเทียบเครื่องมือด้วยข้อมูล, รู้ขีดจำกัด |
 
 ## ซอร์สโค้ด
 
