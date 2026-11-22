@@ -1,7 +1,7 @@
 # Test Engineer Portfolio
 
-**[ชื่อ-นามสกุล]** · Test Development Engineer (Electronics) → Test Engineer (Software / Application)
-ติดต่อ: [อีเมล] · [LinkedIn] · [เบอร์โทร]
+**[Rawit saowarorangsarit]** · Test Development Engineer (Electronics) → Test Engineer (Software / Application)
+ติดต่อ: [rawitsoi2011@gmail.com] · [0827725955. 0863843500]
 
 ## แนะนำตัว
 
@@ -14,7 +14,7 @@
 
 - ตัดชื่อบริษัท ลูกค้า รหัสผลิตภัณฑ์ และข้อมูลภายในออกทั้งหมด
 - ตัวเลขทุกตัวระบุที่มา (ภาพสังเคราะห์ / ภาพจริง / โค้ดจำลอง) และแยกจากผลบนหน้างานจริง
-- ซอร์สโค้ดใน [src/camera_show](src/camera_show/README.md) เป็นเวอร์ชันที่ build และรันผ่านบนเครื่องจริง ไม่รวม DLL ของบุคคลที่สาม
+- ซอร์สโค้ดใน [src/camera_show](src/camera_show/README.md) เป็นเวอร์ชันที่ build และรันผ่านบนเครื่องจริง ไม่รวม DLL Third Party
   และไลบรารีภายใน (`SetupPay`) ดูรายการใน [lib/README.md](src/camera_show/lib/README.md) ประวัติเวอร์ชันในโค้ด (`Version Updata.cs`) ระบุว่าปี 2026.01 มีการจัดโครงสร้างโค้ดใหม่โดยใช้ AI ช่วย
 - งานเหล่านี้พัฒนาร่วมกับ AI assistant (Claude) โดยผมเป็นผู้กำหนดความต้องการ ทดสอบบนเครื่องจริง
   พบและรายงานข้อบกพร่อง และตัดสินใจเลือกแนวทาง `[ตรวจสอบและแก้ข้อความนี้ให้ตรงกับสิ่งที่คุณทำจริง]`
@@ -46,9 +46,8 @@
 | เขียน bug report ที่ทำซ้ำได้ | [bug-reports](bug-reports/) |
 | มองความเสี่ยง (ของเสียหลุดผ่าน > ของดีโดนตีตก) | [โปรเจกต์ 1](projects/01-vision-inspection.md) |
 | Regression testing | [BUG-003](bug-reports/BUG-003-tracking-lost-when-rotating.md) |
-| Test automation / อ่านผลจากเครื่องมือวัด | [โปรเจกต์ 2](projects/02-multi-station-pcba-test-system.md) |
 | วิเคราะห์ root cause และแยกข้อเท็จจริงออกจากข้อสันนิษฐาน | bug reports ทุกฉบับ |
 | เก็บข้อมูลจริงมาปรับปรุงโมเดล / เกณฑ์ | [โปรเจกต์ 1](projects/01-vision-inspection.md), [โปรเจกต์ 3](projects/03-datamatrix-read-reliability.md) |
 
 เครื่องมือ: C# (WinForms, Emgu CV), Python, NI-DAQmx (cDAQ), RS485, Git
-กำลังเสริม: API testing (Postman), SQL, Agile / Jira, ISTQB Foundation `[ลบหรือแก้ตามจริง]`
+กำลังเสริม: API testing (Postman), SQL
